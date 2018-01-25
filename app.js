@@ -11,23 +11,19 @@ app.use(express.static(__dirname + "/public"));
 
 const baseQuery = "SELECT posts.*, users.name, counting.upvotes FROM posts INNER JOIN users ON users.id = posts.userId INNER JOIN (SELECT postId, COUNT(*) as upvotes FROM upvotes GROUP BY postId) AS counting ON posts.id = counting.postId\n";
 
-app.get("/", async (req, res) => {
+app.get("/", async (req, res, next) => {
   try {
     const data = await client.query(baseQuery);
     res.send(postList(data.rows));
-  } catch (error) {
-    res.status(500).send(`Something went wrong: ${error}`);
-  }
+  } catch (error) { next(error) }
 });
 
-app.get("/posts/:id", async (req, res) => {
+app.get("/posts/:id", async (req, res, next) => {
   try {
     const data = await client.query(baseQuery + "WHERE posts.id = $1", [req.params.id]);
     const post = data.rows[0];
     res.send(postDetails(post));
-  } catch (error) {
-    res.status(500).send(`Something went wrong: ${error}`);
-  }
+  } catch (error) { next(error) }
 });
 
 const PORT = 1337;
