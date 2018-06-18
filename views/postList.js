@@ -18,7 +18,7 @@ module.exports = (posts) => html`<!DOCTYPE html>
             <small>(by ${post.name})</small>
           </p>
           <small class="news-info">
-            ${post.upvotes} upvotes | ${timeAgo(post.date)}
+            ${post.upvotes ? post.upvotes : 0} upvotes | ${timeAgo(post.date)}
           </small>
         </div>`
       )}
